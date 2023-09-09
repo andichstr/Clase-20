@@ -1,0 +1,321 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtiene todos los productos.
+      tags:
+        - Products
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        description: Cantidad de productos deseados en la pagina
+        schema:
+          $type: integer
+      - name: page
+        in: query
+        required: false
+        description: Numero de pagina que se desea obtener
+        schema:
+          $type: integer
+      - name: query
+        in: query
+        required: false
+        description: Opcionalmente, se pueden enviar ids para seleccionar productos especificos aqui
+        schema:
+          $type: string
+      - name: sort
+        in: query
+        required: false
+        description: Metodo de ordenamiento (ASC o DESC).
+        schema:
+          $type: integer
+      responses:
+        "200":
+          description: Los productos fueron obtenidos satisfactoriamente de la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#components/schemas/Product'
+                  totalPages:
+                    type: integer
+                  prevPage:
+                    type: integer
+                  page:
+                    type: integer
+                  hasPrevPage:
+                    type: boolean
+                  hasNextPage:
+                    type: boolear
+                  firstLink:
+                    type: string
+                  lastLink:
+                    type: string
+                  prevLink:
+                    type: string
+                  nextLink:
+                    type: string
+        "500":
+          description: Error interno del servidor, usuarlmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomException'
+    post:
+      summary: Crea el producto enviado dentro del body.
+      tags:
+        - Products
+      requestBody:
+        description: El producto que será enviado a la base de datos.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/ProductDTO'
+      responses:
+        "201":
+          description: El producto fue agregado satisfactoriamente a la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "404":
+          description: El body fue enviado con contenido vacío.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usuarlmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+  /api/products/{pid}:
+    get:
+      summary: Obtiene el producto solicitado con el ID del producto.
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se busca
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: El producto solicitado fue obtenido satisfactoriamente de la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Product'
+        "404":
+          description: El producto solicitado no se encontró en la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomException'
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomException'
+    put:
+      summary: Obtiene todos los productos.
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se busca
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: Los productos fueron obtenidos satisfactoriamente de la base de datos.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Product'
+        "400":
+          description: El body fue enviado con contenido vacío.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usuarlmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+    delete:
+      summary: Borra el producto que tenga el ID enviado por parámetro.
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se busca
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: El producto fue borradp satisfactoriamente de la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+              $ref: '#components/schemas/CustomResponse'
+        "404":
+          description: El producto no se encuentra en la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usuarlmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+              application/json:
+                schema:
+                  type: object
+                  $ref: '#components/schemas/CustomResponse'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado por mongo.
+        title:
+          type: String
+          description: Nombre del producto.
+        description:
+          type: String
+          description: Descripción del producto.
+        code:
+          type: String
+          description: Código único del producto.
+        price:
+          type: Number
+          description: Precio del producto.
+        stock:
+          type: Number
+          description: Cantidad de productos en stock.
+        category:
+          type: String
+          description: Categoría del producto.
+        status:
+          type: Boolean
+          description: Estado del producto.
+        thumbnails:
+          type: Array
+          description: Lista de url de imágenes del producto.
+        owner:
+          type: String
+          description: Email del dueño del producto.
+      example:
+        _id: ObjectId("644081a93f0625dc193bc594")
+        title: Gamer Keyboard
+        description: Red Dragon gamer retroiluminated mechanical keyboard
+        code: r3c03kl@ddc
+        price: 9800
+        stock: 50
+        category: Technology
+        status: true
+        thumbnails: ["https://www.url1.com", "https://www.url2.com"]
+        owner: adminOrPremium@owner.com
+    ProductDTO:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Nombre del producto.
+        description:
+          type: String
+          description: Descripción del producto.
+        code:
+          type: String
+          description: Código único del producto.
+        price:
+          type: Number
+          description: Precio del producto.
+        stock:
+          type: Number
+          description: Cantidad de productos en stock.
+        category:
+          type: String
+          description: Categoría del producto.
+        thumbnails:
+          type: Array
+          description: Lista de url de imágenes del producto.
+      example:
+        title: Gamer Keyboard
+        description: Red Dragon gamer retroiluminated mechanical keyboard
+        code: r3c03kl@ddc
+        price: 9800
+        stock: 50
+        category: Technology
+        status: true
+        thumbnails: ["https://www.url1.com", "https://www.url2.com"]
+    CustomException:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensaje de error.
+        status:
+          type: integer
+          description: Codigo de identificación del error
+        name:
+          type: string
+          description: Nombre del archivo donde surgió el error.
+        errorType:
+          type: enum
+          description: Codigo de error interno del error.
+      example:
+        message: "The product was not found"
+        status: 404
+        name: NotFoundException
+        errorType: ProductException
+    CustomResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensaje de error.
+        status:
+          type: integer
+          description: Codigo de identificación del error
+        data:
+          type: object
+          description: Datos a enviar al frontend.
+          $ref: '#components/schema/ProductDTO'
+      example:
+        message: "The product was added succesfully"
+        status: 201
+        data: "{title: Gamer Keyboard, description: Red Dragon gamer retroiluminated mechanical keyboard, code: r3c03kl@ddc, price: 9800, stock: 50, category: Technology, status: true, thumbnails: ['https://www.url1.com', 'https://www.url2.com']}"

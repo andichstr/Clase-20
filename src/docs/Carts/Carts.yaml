@@ -1,0 +1,296 @@
+paths:
+  /api/carts/:
+    post:
+      summary: Crea un carrito.
+      tags:
+        - Carts
+      responses:
+        "201":
+          description: Agrega un carrito a la base de datos.
+          content:
+            application/json:
+              schema:
+                type: json
+                items:
+                  status: "Success"
+                  message: "Cart created successfully"
+                  $ref: '#components/schemas/Cart'
+        "500":
+          description: Error interno del servidor, usuarlmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un carrito específico.
+      tags:
+        - Carts
+      parameters:
+       -  name: cid
+          in: path
+          required: true
+          description: ID del carrito que se busca
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Devuelve el carrito solicitado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "404":
+          description: El carrito no se encuentra en la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+    put:
+      summary: Reemplaza el carrito con el nuevo carrito enviado en el body.
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que se busca
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: Modifica el carrito satisfactoriamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+    delete:
+      summary: Borra todos los productos del carrito.
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que se busca
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: Borra todos los productos dentro del carrito satisfactoriamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agrega un producto al carrito.
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que se busca
+        schema:
+          $type: string
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se busca
+        schema:
+          $type: string
+      responses:
+        "201":
+          description: Agrega el producto al carrito satisfactoriamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+    put:
+      summary: Modifica la cantidad de productos del producto con el ID enviado por parametro, del carrito con el cid enviado por parametro.
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que se busca
+        schema:
+          $type: string
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se busca
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: Modifica el producto dentro del carrito satisfactoriamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+    delete:
+      summary: Borra un producto del carrito.
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que se busca
+        schema:
+          $type: string
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se busca
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: Borra el producto del carrito satisfactoriamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "404":
+          description: El carrito con el id enviado no existe.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Efectua la compra de los productos del carrito.
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que se busca
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: Ejecuta la compra satisfactoriamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CustomResponse'
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado por mongo.
+        products:
+          type: array
+          description: Lista de productos en el carrito.
+      example:
+        _id: ObjectId("4513081a12f0625dc193c594")
+        products: []
+    CartDTO:
+      type: object
+      properties:
+        products:
+          type: array
+          description: Lista de productos en el carrito.
+      example:
+        products: []
+    CustomException:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensaje de error.
+        status:
+          type: integer
+          description: Codigo de identificación del error
+        name:
+          type: string
+          description: Nombre del archivo donde surgió el error.
+        errorType:
+          type: string
+          description: Codigo de error interno del error.
+      example:
+        message: "The cart was not found"
+        status: 404
+        name: NotFoundException
+        errorType: CartsException
+    CustomResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensaje de error.
+        status:
+          type: integer
+          description: Codigo de identificación del error
+        data:
+          type: object
+          description: Datos a enviar al frontend.
+          $ref: '#components/schemas/CartDTO'
+      example:
+        message: "The product was added succesfully"
+        status: 201
+        data: "{products:[]}"
